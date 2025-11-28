@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Galerie Mystique Africaine Persistante</title>
+  <style>
+    body 
+	{
+      font-family: 'Arial', sans-serif;
+      margin: 0;
+      padding: 20px;
+      text-align: center;
+      background: linear-gradient(120deg, #f5deb3, #d2691e);
+      background-image: url('https://i.imgur.com/8O0bX2h.png'); /* motifs africains subtils */
+      background-repeat: repeat;
+      background-size: 150px 150px;
+    }
+
+    h1 {
+      color: #fff8dc;
+      text-shadow: 2px 2px #8b4513;
+      margin-bottom: 20px;
+    }
+
+    input[type="file"] {
+      margin: 20px 0;
+      padding: 10px;
+      border-radius: 8px;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .gallery {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .image-container {
+      position: relative;
+      display: inline-block;
+      cursor: grab;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+      transition: box-shadow 0.3s, transform 0.3s;
+    }
+
+    .image-container.dragging {
+      opacity: 0.5;
+    }
+
+    .image-container:hover {
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
+      transform: scale(1.05);
+    }
+
+    .gallery img {
+      width: 200px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 12px;
+    }
+
+    .delete-btn {
+      position: absolute;
+      top: 5px;
+      right: 5px;
+      background-color: rgba(255, 0, 0, 0.8);
+      border: none;
+      color: white;
+      padding: 5px 8px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-weight: bold;
+      z-index: 1;
+    }
+
+    .delete-btn:hover {
+      background-color: rgba(255, 0, 0, 1);
+    }
+  </style>
+</head>
+<body>
+<nav>
+    <a href="index.html">Accueil</a>
+    <a href="produits.html">Produits</a>
+    <a href="contact.html">Contactact</a>
+  </nav>
+  <h1>Galerie Mystique Africaine Persistante</h1>
+  <input type="file" id="imageInput" multiple accept="image/*">
+  <div class="gallery" id="gallery"></div>
+
+  <script>
+    const imageInput = document.getElementById('imageInput');
+    const gallery = document.getElementById('gallery');
+    let draggedItem = null;
+
+    // Charger les images sauvegardées au démarrage
+    const savedImages = JSON.parse(localStorage.getItem('galleryImages') || '[]');
+    savedImages.forEach(src => addImageToGallery(src));
+
+    // Ajouter image et gestion drag & drop
+    function addImageToGallery(src) {
+      const container = document.createElement('div');
+      container.classList.add('image-container');
+      container.setAttribute('draggable', 'true');
+
+      const img = document.createElement('img');
+      img.src = src;
+
+      const deleteBtn = document.createElement('button');
+      deleteBtn.textContent = '×';
+      deleteBtn.classList.add('delete-btn');
+      deleteBtn.onclick = () => {
+        container.remove();
+        saveGallery();
+      };
+
+      container.appendChild(img);
+      container.appendChild(deleteBtn);
+      gallery.appendChild(container);
+
+      // Drag & Drop
+      container.addEventListener('dragstart', () => {
+        draggedItem = container;
+        setTimeout(() => container.classList.add('dragging'), 0);
+      });
+      container.addEventListener('dragend', () => {
+        draggedItem = null;
+        container.classList.remove('dragging');
+        saveGallery(); // sauvegarde après déplacement
+      });
+      container.addEventListener('dragover', e => e.preventDefault());
+      container.addEventListener('drop', e => {
+        e.preventDefault();
+        if (draggedItem && draggedItem !== container) {
+          const allItems = Array.from(gallery.children);
+          const draggedIndex = allItems.indexOf(draggedItem);
+          const targetIndex = allItems.indexOf(container);
+
+          if (draggedIndex < targetIndex) {
+            gallery.insertBefore(draggedItem, container.nextSibling);
+          } else {
+            gallery.insertBefore(draggedItem, container);
+          }
+          saveGallery();
+        }
+      });
+    }
+
+    // Sauvegarder la galerie dans localStorage
+    function saveGallery() {
+      const images = Array.from(gallery.querySelectorAll('img')).map(img => img.src);
+      localStorage.setItem('galleryImages', JSON.stringify(images));
+    }
+
+    // Ajouter depuis input
+    imageInput.addEventListener('change', function() {
+      const files = Array.from(this.files);
+      files.forEach(file => {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          addImageToGallery(e.target.result);
+          saveGallery();
+        }
+        reader.readAsDataURL(file);
+      });
+    });
+  </script>
+</body>
+</html>
