@@ -1,0 +1,132 @@
+body {
+    margin: 0;
+    background: #f4f1ea;
+    font-family: "Poppins", sans-serif;
+    scroll-behavior: smooth;
+}
+
+header {
+    background: linear-gradient(90deg, #000, #2b2b2b);
+    color: #ffd700;
+    padding: 25px;
+    text-align: center;
+    font-size: 28px;
+    letter-spacing: 2px;
+}
+
+/* Filtres dynamiques */
+#filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    padding: 15px;
+    flex-wrap: wrap;
+}
+.filter-btn {
+    padding: 10px 22px;
+    border: none;
+    background: #000;
+    color: #ffd700;
+    border-radius: 25px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: 0.3s;
+}
+.filter-btn.active,
+.filter-btn:hover {
+    background: #ffd700;
+    color: #000;
+}
+
+/* Scroll animé comme magazine */
+#catalogue {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 25px;
+    padding: 35px;
+    animation: fadeScroll 1.2s ease;
+}
+@keyframes fadeScroll {
+    from { opacity: 0; transform: translateY(40px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Cartes Premium */
+.card {
+    background: white;
+    border-radius: 18px;
+    overflow: hidden;
+    box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    transition: 0.4s;
+    cursor: pointer;
+    animation: fadeIn 0.8s ease forwards;
+    opacity: 0;
+}
+@keyframes fadeIn {
+    to { opacity: 1; }
+}
+.card:hover {
+    transform: translateY(-10px);
+}
+.card img {
+    width: 100%;
+    height: 240px;
+    object-fit: cover;
+    transition: 0.5s;
+}
+.card:hover img {
+    transform: scale(1.12);
+}
+.card-title {
+    padding: 15px;
+    text-align: center;
+    font-size: 18px;
+    font-weight: bold;
+}
+
+/* Lightbox */
+#lightbox {
+    display: none;
+    position: fixed;
+    top: 0; left: 0;
+    width: 100%; height: 100%;
+    background: rgba(0,0,0,0.95);
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    gap: 20px;
+    z-index: 100;
+}
+#lightbox img {
+    max-width: 80%;
+    max-height: 70%;
+    border-radius: 12px;
+}
+
+#downloadBtn {
+    background: #ffd700;
+    padding: 12px 25px;
+    border-radius: 10px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #000;
+}
+
+#closeLB {
+    position: absolute;
+    top: 25px;
+    right: 40px;
+    font-size: 45px;
+    color: white;
+    cursor: pointer;
+}
+.lbNav {
+    position: absolute;
+    top: 50%;
+    font-size: 50px;
+    color: white;
+    cursor: pointer;
+    padding: 10px;
+}
+#lbPrev { left: 40px; }
+#lbNext { right: 40px; }

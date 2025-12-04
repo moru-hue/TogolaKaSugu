@@ -5,6 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>TOGOLA Store — Boutique Canine</title>
 <link rel="stylesheet" href="style.css">
+ <!-- SDK Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database.js"></script>
+
+  <!-- Config Firebase -->
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyC28UHuoP3pob744wV7qsWNawOlgyR9atw",
+      authDomain: "togolakasugu.firebaseapp.com",
+      databaseURL: "https://togolakasugu-default-rtdb.firebaseio.com",
+      projectId: "togolakasugu",
+      storageBucket: "togolakasugu.firebasestorage.app",
+      messagingSenderId: "154484137804",
+      appId: "1:154484137804:web:799ebea8bb516b7f5d79e9"
+    };
+    const app = firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
 <script defer src="script.js"></script>
 </head>
 <body>
@@ -13,20 +30,20 @@
   <h1>TOGOLA Store</h1>
   <nav>
     <a href="index.html">Accueil</a>
-    <a href="chiens.html">Chiens</a>
+    <a href="chiens.html">Chiens disponibles</a>
     <a href="produits.html">Accessoires</a>
-    <a href="contact.html">Contact</a>
-	<a href="catalogues.html">Catalogues</a>
+    <a href="contact.html">Nous Contactez</a>
+	<a href="Catalogues.html">Catalogues</a>
   </nav>
 </header>
 
 <section class="hero">
   <h2>Élevage & Boutique Canine</h2>
-  section class="Ciens-populaires">
+  <section class="Ciens-populaires">
   <h2>CHIENS POPULAIRES</h2>
   <div class="grid">
     <div class="produit-card">
-      <img src="all.jpg" alt="Chien de protection">
+      <img src="paa.jpg" alt="Chien de protection">
       <h3>CHIEN DE PROTECTION</h3>
       <p>importés</p>
 	   <a href="catalogues.html?id=3" class="btn">Voir le Catalogues</a>

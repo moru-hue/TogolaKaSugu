@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TOGOLA — Catalogue Visionnaire</title>
+<style>
+:root{
+--gold:#d98c00;
+--dark:#111;
+--light:#f9f9f9;
+--muted:#6b6b6b;
+--card:#fff;
+--shadow:rgba(0,0,0,0.08);
+--transition:all 0.3s ease-in-out;
+}
+body{
+font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+background:#1b1b2f;
+color:#fff;
+margin:0;
+padding:0;
+transition:var(--transition);
+}
+body.light{background:#f2f2f2;color:#111;}
+#particleCanvas{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0;pointer-events:none;}
+.container{max-width:1100px;margin:28px auto;padding:0 18px;position:relative;z-index:1;}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:18px;position:relative;z-index:2;transition:var(--transition);}
+.brand{display:flex;align-items:center;gap:12px;}
+.logo{width:56px;height:56px;border-radius:12px;background:linear-gradient(135deg,var(--gold),#8a6b2a);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:20px;animation:glow 2s infinite alternate;}
+@keyframes glow{0%{box-shadow:0 0 10px var(--gold);}100%{box-shadow:0 0 30px var(--gold);}}
+.title{font-size:22px;font-weight:800;color:#fff;text-shadow:0 0 8px rgba(255,215,0,0.5);}
+body.light .title{color:#d98c00;text-shadow:none;}
+.search-wrap{flex:1;max-width:640px;margin:0 18px;position:relative;}
+.search-input{width:100%;padding:12px 52px 12px 56px;border-radius:999px;border:1px solid #e6e6e6;background:#fff;box-shadow:0 6px 20px rgba(16,24,40,0.15);transition:var(--transition);}
+.search-input:focus{outline:none;box-shadow:0 0 18px rgba(255,215,0,0.6);}
+.search-photo{position:absolute;left:12px;top:50%;transform:translateY(-50%);width:40px;height:40px;border-radius:50%;overflow:hidden;border:2px solid #fff;box-shadow:0 4px 14px rgba(255,215,0,0.7);cursor:pointer;transition:var(--transition);}
+.search-photo:hover{box-shadow:0 0 22px var(--gold);}
+.search-photo img{width:100%;height:100%;object-fit:cover;}
+.search-icon{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:18px;color:var(--muted);}
+.cart{position:relative;cursor:pointer;display:flex;align-items:center;gap:6px;font-weight:700;transition:var(--transition);}
+.cart:hover{transform:scale(1.1);box-shadow:0 0 26px var(--gold);}
+.cart-count{position:absolute;top:-6px;right:-6px;background:var(--gold);color:white;font-weight:700;border-radius:999px;padding:4px 7px;font-size:12px;}
+.total-top{font-size:14px;color:var(--gold);transition:var(--transition);}
+.totalTopFlash{animation:flashTotal 0.4s;}
+@keyframes flashTotal{0%{color:var(--gold);}50%{color:#fff;}100%{color:var(--gold);}}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:18px;margin-top:26px;transition:var(--transition);}
+.card{background:var(--card);border-radius:14px;padding:14px;box-shadow:0 12px 30px var(--shadow);display:flex;flex-direction:column;gap:10px;cursor:pointer;transition:transform 0.4s, box-shadow 0.4s;}
+.card:hover{transform:scale(1.05) rotateZ(1deg);box-shadow:0 22px 50px rgba(255,215,0,0.35);}
+.card:hover .product-title{color:var(--gold);}
+.img-wrap{height:160px;border-radius:10px;overflow:hidden;background:#eee;transition:transform 0.4s;}
+.img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.5s,filter 0.5s;}
+.card:hover .img-wrap img{transform:scale(1.08) blur(1px);}
+.product-title{font-weight:700;font-size:16px;transition:color 0.3s;text-shadow:0 0 4px rgba(255,215,0,0.2);}
+.price{color:var(--gold);font-weight:800;font-size:15px;text-shadow:0 0 3px rgba(255,215,0,0.2);}
+.meta{font-size:13px;color:var(--muted);}
+.actions{display:flex;gap:8px;margin-top:auto;}
+button{cursor:pointer;border:0;padding:10px 12px;border-radius:10px;transition:var(--transition);}
+.btn-primary{background:var(--gold);color:#fff;font-weight:700;box-shadow:0 6px 14px rgba(217,140,0,0.5);}
+.btn-primary:hover{background:#b57700;transform:scale(1.05);box-shadow:0 0 20px rgba(217,140,0.8);}
+.btn-primary.pulse{animation:pulseAdd 0.6s;}
+@keyframes pulseAdd{0%{transform:scale(1);}50%{transform:scale(1.15);}100%{transform:scale(1);}}
+.btn-outline{background:#fff;border:1px solid #eee;color:var(--dark);}
+.btn-outline:hover{background:#f2f2f2;}
+footer{margin-top:30px;padding:20px;border-radius:12px;background:#111;color:white;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;transition:var(--transition);}
+body.light footer{background:#fff;color:#111;}
+.modal{position:fixed;right:20px;bottom:20px;width:360px;max-width:calc(100% - 40px);background:#fff;border-radius:12px;box-shadow:0 20px 50px rgba(2,6,23,0.2);overflow:hidden;transform:translateY(20px);opacity:0;pointer-events:none;transition:var(--transition);}
+.modal.open{transform:translateY(0);opacity:1;pointer-events:auto;animation:goldGlow 0.4s;}
+@keyframes goldGlow{0%{box-shadow:0 0 0 var(--gold);}50%{box-shadow:0 0 20px var(--gold);}100%{box-shadow:0 0 0 var(--gold);}}
+.modal header{padding:14px;border-bottom:1px solid #f2f2f2;font-weight:700;font-size:16px;}
+.modal .items{max-height:260px;overflow:auto;padding:12px;}
+.modal .footer{padding:12px;border-top:1px solid #f2f2f2;display:flex;gap:8px;justify-content:space-between;}
+#toast{position:fixed;bottom:20px;right:20px;background:var(--gold);color:#fff;padding:12px 20px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.2);opacity:0;pointer-events:none;transition:opacity 0.5s;text-shadow:0 0 4px rgba(255,215,0,0.5);}
+.theme-toggle{position:fixed;top:20px;right:20px;background:var(--gold);color:#fff;padding:10px 14px;border-radius:12px;cursor:pointer;font-weight:700;z-index:10;transition:var(--transition);}
+</style>
+</head>
+<body>
+<div class="theme-toggle" id="themeToggle">🌙 Thème Nuit</div>
+<canvas id="particleCanvas"></canvas>
+<div class="container">
+<header>
+<div class="brand">
+<div class="logo">TG</div>
+<div class="title">TOGOLA — Catalogue Visionnaire</div>
+</div>
+<div class="search-wrap">
+<div class="search-photo"><img src="112.jpg" alt="Photo" /></div>
+<input type="text" id="search" class="search-input" placeholder="Rechercher un produit..." />
+<div class="search-icon">🔍</div>
+</div>
+<div style="display:flex;align-items:center;gap:14px">
+<div class="cart" id="cartBtn" title="Voir le panier">🛒<div class="cart-count" id="cartCount">0</div><div class="total-top" id="cartTotalTop">0 FCFA</div></div>
+</div>
+</header>
+
+<main>
+<div class="grid" id="products"></div>
+</main>
+
+<footer>
+<div><strong>TOGOLA le Visionnaire</strong><div style="font-size:13px;color:#cfcfcf">Bamako • +223 74 42 24 94</div></div>
+<div style="text-align:right"><div style="font-size:13px;color:#cfcfcf">Paiement: Orange Money • Wave • Paiement à la livraison</div></div>
+</footer>
+
+<div class="modal" id="cartModal">
+<header>Panier <span id="modalTotal" style="float:right;color:var(--gold)"></span></header>
+<div class="items" id="cartItems"></div>
+<div class="footer">
+<button class="btn-outline" id="closeCart">Continuer mes achats</button>
+<button class="btn-primary" id="checkout">Réserver / WhatsApp</button>
+<button class="btn-primary" id="omPay">Payer sur Orange Money</button>
+</div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+// Thème jour/nuit
+const themeToggle=document.getElementById('themeToggle');
+themeToggle.addEventListener('click',()=>{
+document.body.classList.toggle('light');
+themeToggle.innerText=document.body.classList.contains('light')?'🌙 Thème Nuit':'☀️ Thème Jour';
+});
+
+// Particles
+const canvas=document.getElementById('particleCanvas');const ctx=canvas.getContext('2d');let particles=[];function resizeCanvas(){canvas.width=window.innerWidth;canvas.height=window.innerHeight;}window.addEventListener('resize',resizeCanvas);resizeCanvas();for(let i=0;i<100;i++){particles.push({x:Math.random()*canvas.width,y:Math.random()*canvas.height,r:Math.random()*2+1,dx:(Math.random()-0.5)/2,dy:(Math.random()-0.5)/2})}document.addEventListener('mousemove',e=>{particles.forEach(p=>{let dist=Math.hypot(p.x-e.clientX,p.y-e.clientY);if(dist<100){p.x-=0.5*(e.clientX-p.x)/dist;p.y-=0.5*(e.clientY-p.y)/dist;}})});function drawParticles(){ctx.clearRect(0,0,canvas.width,canvas.height);particles.forEach(p=>{ctx.beginPath();ctx.arc(p.x,p.y,p.r,0,2*Math.PI);ctx.fillStyle='rgba(217,140,0,0.7)';ctx.fill();p.x+=p.dx;p.y+=p.dy;if(p.x<0)p.x=canvas.width;if(p.x>canvas.width)p.x=0;if(p.y<0)p.y=canvas.height;if(p.y>canvas.height)p.y=0;});requestAnimationFrame(drawParticles);}drawParticles();
+
+// Produits
+const productsData=[
+{id:1,title:'Chien Rottweiller "Wara"',price:150000,desc:'Chienne élégante et dressée',img:'paa.jpg'},
+{id:2,title:'Chien Berger Allemand "Paa"',price:90000,desc:'hienne élégante, dressée et calme',img:'all.jpg'},
+{id:3,title:'Chien Berger Malinois"',price:35000,desc:'Chienne élégante',img:'chien 2.jpg'}
+];
+
+const productsEl=document.getElementById('products');const cart=[];const cartCount=document.getElementById('cartCount');const cartTotalTop=document.getElementById('cartTotalTop');const cartModal=document.getElementById('cartModal');const cartItems=document.getElementById('cartItems');const modalTotal=document.getElementById('modalTotal');
+
+function money(n){return n.toLocaleString('fr-FR')+' FCFA'}
+function showToast(message,duration=3000){const toast=document.getElementById('toast');toast.innerText=message;toast.style.opacity='1';setTimeout(()=>toast.style.opacity='0',duration);}
+function updateCartUI(){cartCount.innerText=cart.length;let total=0;cartItems.innerHTML='';cart.forEach((it,idx)=>{total+=it.price;const el=document.createElement('div');el.style.display='flex';el.style.justifyContent='space-between';el.style.alignItems='center';el.style.padding='8px 0';el.innerHTML=`<div style='display:flex;gap:8px;align-items:center'><img src='${it.img}' style='width:48px;height:48px;object-fit:cover;border-radius:8px'><div><div style='font-weight:700'>${it.title}</div><div style='font-size:12px;color:#777'>${money(it.price)}</div></div></div><div><button onclick='removeItem(${idx})' class='btn-outline' style='padding:6px 10px'>Supprimer</button></div>`;cartItems.appendChild(el);});modalTotal.classList.add('totalTopFlash');cartTotalTop.classList.add('totalTopFlash');setTimeout(()=>{modalTotal.classList.remove('totalTopFlash');cartTotalTop.classList.remove('totalTopFlash')},400);modalTotal.innerText=money(total);cartTotalTop.innerText=money(total);}
+function removeItem(index){cart.splice(index,1);updateCartUI();}
+function openCart(){cartModal.classList.add('open');}
+function closeCart(){cartModal.classList.remove('open');}
+function renderProducts(list){productsEl.innerHTML='';list.forEach(p=>{const card=document.createElement('div');card.className='card';card.innerHTML=`<div class="img-wrap"><img src="${p.img}" alt="${p.title}"></div><div class="product-title">${p.title}</div><div class="meta">${p.desc}</div><div style="display:flex;justify-content:space-between;align-items:center;margin-top:8px"><div class="price">${money(p.price)}</div><div class="actions"><button class="btn-outline" onclick="viewDetails(${p.id})">Voir</button><button class="btn-primary" onclick="addToCart(${p.id},this)">Ajouter</button></div></div>`;productsEl.appendChild(card);});}
+
+// Barre de recherche
+const searchInput=document.getElementById('search');
+searchInput.addEventListener('input', e => {
+const query=e.target.value.toLowerCase();
+const filtered=productsData.filter(p=>p.title.toLowerCase().includes(query));
+renderProducts(filtered);
+});
+
+// Fonctions cartes
+function viewDetails(id){const p=productsData.find(x=>x.id===id);alert(p.title+'\n\n'+p.desc+'\n\nPrix: '+money(p.price));}
+function addToCart(id,btn){const p=productsData.find(x=>x.id===id);cart.push(JSON.parse(JSON.stringify(p)));btn.classList.add('pulse');setTimeout(()=>btn.classList.remove('pulse'),600);updateCartUI();openCart();}
+
+// Panier
+document.getElementById('cartBtn').addEventListener('click',()=>{if(cart.length===0)return showToast('Le panier est vide',2000);openCart();});
+document.getElementById('closeCart').addEventListener('click',closeCart);
+
+// Réserver / WhatsApp
+document.getElementById('checkout').addEventListener('click',()=>{
+if(cart.length===0){showToast('Le panier est vide',2000);return;}
+let message='Bonjour TOGOLA, je souhaite réserver ces articles :\n';
+cart.forEach(p=>{message+=`- ${p.title} : ${money(p.price)}\n`;});
+message+=`Total : ${cart.reduce((a,b)=>a+b.price,0)} FCFA`;
+const whatsappLink=`https://wa.me/22374422494?text=${encodeURIComponent(message)}`;
+window.open(whatsappLink,'_blank');
+showToast('Lien WhatsApp ouvert pour la réservation !',2500);
+});
+
+// Orange Money
+document.getElementById('omPay').addEventListener('click',()=>{
+if(cart.length===0){showToast('Le panier est vide',2000);return;}
+let total=cart.reduce((a,b)=>a+b.price,0);
+alert(`Pour payer sur Orange Money :\nNuméro : +223 74 42 24 94\nMontant : ${money(total)}\nSuivez les instructions OM pour effectuer le paiement.`);
+});
+
+renderProducts(productsData);
+</script>
+</body>
